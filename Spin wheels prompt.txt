@@ -1,0 +1,144 @@
+Create a complete Prize Winning Spin Wheel web app using a single HTML file that is fully mobile-friendly and includes all CSS, JavaScript, and animations inside the same file. You may use external CDNs for animations (like confetti).
+
+Use Custom Spin Image:
+
+The spin wheel must use an image file named spin.png, placed in the same folder as the HTML file.
+
+Do not draw the wheel using canvas or SVG — just rotate the image using CSS/JS for the spin effect.
+
+I will add the image file myself. Just make sure the code uses it as spin.png.
+
+
+
+---
+
+Web Page Features & Flow:
+
+1. Modern UI Design
+
+Design the page with a celebration-based, prize-winning theme using glowing gradients, stylish fonts, and animated elements.
+
+Use a heading like:
+“Spin the Wheel & Win a Guaranteed Prize!”
+
+
+
+2. Spin Wheel Setup
+
+Display the image spin.png at the top center.
+
+Below it, place a glowing “SPIN NOW” button with hover and click animation.
+
+
+
+3. Prize Segments (12 Options)
+The wheel must visually show 12 prize sections labeled with the following:
+
+₹100 PayTM Cash
+
+Movie Ticket
+
+iPhone 14
+
+Samsung TV
+
+Smartwatch
+
+Bluetooth Speaker
+
+AirPods
+
+Better Luck Next Time
+
+Amazon Voucher ₹50
+
+Free Coffee Coupon
+
+20% Discount Voucher
+
+Surprise Gift Box
+
+
+
+4. Winning Logic
+
+Although "Better Luck Next Time" is shown on the wheel, make sure the wheel never lands on it.
+
+Always randomly land on one of the 11 real prizes.
+
+
+
+5. Spin Animation
+
+On clicking the SPIN button, rotate the spin.png image with realistic easing and deceleration.
+
+After spinning, determine the prize and stop the wheel accordingly.
+
+
+
+6. Winning Message
+
+After the spin ends, display:
+“Congratulations! You won [Prize Name]”
+
+Then:
+“To claim your prize, share this page with 10 WhatsApp friends.”
+
+
+
+7. WhatsApp Share
+
+Add a WhatsApp share button with pre-filled text:
+“I just won a real prize on this Spin & Win page! Try your luck too!”
+
+After sharing, simulate return (e.g., after a delay or flag) to show the next step.
+
+
+
+8. Prize Claim Form
+
+After sharing, reveal a form with:
+
+Name input
+
+Mobile Number input
+
+Submit button with animation
+
+
+On submission, display:
+
+“Your prize claim has been submitted successfully!”
+
+“Congratulations again! You will be contacted soon.”
+
+
+
+
+9. Celebration Effects
+
+Use confetti animation when the user wins.
+
+All interactive elements (Spin, Share, Submit) must have glowing outline and hover/click animations.
+
+
+
+10. Responsive Design
+
+The entire page should look great on all phones and screen sizes (100% mobile-friendly).
+
+
+
+11. Single File Only
+
+All HTML, CSS, and JavaScript must be in one .html file.
+
+You may use CDN links for external libraries (e.g., for confetti).
+
+
+
+
+
+---
+
+Important: Use the image file named spin.png for the wheel and rotate it dynamically. Do not create the wheel in code — just animate the image.
