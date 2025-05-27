@@ -525,4 +525,107 @@
             }
 
             // --- Event Listeners ---
-            spinButton.addEventLi
+            spinButton.addEventListener('click', () => {
+                if (isSpinning) return;
+                isSpinning = true;
+                spinButton.disabled = true;
+                spinButton.classList.remove('initial-glow');
+
+                stopSound(); 
+                successMessageArea.classList.remove('visible');
+                winModal.classList.remove('visible'); 
+
+                playSound(SPIN_SOUND_SRC, true); 
+
+                const randomIndex = Math.floor(Math.random() * winnablePrizes.length);
+                currentSelectedPrize = winnablePrizes[randomIndex];
+                const winningSegmentIndex = currentSelectedPrize.originalIndex;
+
+                const prizeTrueCenterAngleOnImage = winningSegmentIndex * segmentAngle;
+                const targetAngleInCycle = (360 - prizeTrueCenterAngleOnImage + 360) % 360;
+
+                const numFullSpins = 8 + Math.floor(Math.random() * 8);
+                const prevFullRotations = Math.floor(currentRotation / 360);
+                let targetRotation = (prevFullRotations + numFullSpins) * 360 + targetAngleInCycle;
+
+                if (targetRotation <= currentRotation + 360 * 3) {
+                     targetRotation += 360 * (3 + Math.floor(Math.random()*3));
+                }
+
+                spinWheelImage.style.transform = `rotate(${targetRotation}deg)`;
+                currentRotation = targetRotation;
+
+                spinWheelImage.addEventListener('transitionend', handleVisualSpinEnd, { once: true });
+            });
+
+            function handleVisualSpinEnd() {
+                isSpinning = false;
+                stopSound(); 
+
+                if (currentSelectedPrize) {
+                    winMessageInModal.textContent = `Congratulations! You won ${currentSelectedPrize.name}!`;
+                } else {
+                    winMessageInModal.textContent = `Congratulations! You won a prize!`;
+                }
+                
+                userNameInModal.value = ''; 
+                userMobileInModal.value = ''; 
+
+                winModal.classList.add('visible');
+                
+                setTimeout(() => {
+                    playSound(WIN_SOUND_SRC, false); 
+                }, 100); 
+
+                confettiInstance({ particleCount: 300, spread: 120, origin: { y: 0.45 }, zIndex: 9999 });
+            }
+
+            window.addEventListener('beforeunload', stopSound);
+
+            whatsappShareButtonInModal.addEventListener('click', () => {
+                stopSound();
+                const userName = userNameInModal.value.trim();
+                const userMobile = userMobileInModal.value.trim();
+
+                if (!userName || !userMobile) {
+                    alert('Please fill in Your Name and Mobile Number to claim your prize.');
+                    if (!userName) userNameInModal.focus();
+                    else userMobileInModal.focus();
+                    return; 
+                }
+                if (!/^[6-9][0-9]{9}$/.test(userMobile)) {
+                    alert('Please enter a valid 10-digit mobile number.');
+                    userMobileInModal.focus();
+                    return;
+                }
+
+                // console.log('Claim details (via WhatsApp share action):', { name: userName, mobile: userMobile, prize: currentSelectedPrize ? currentSelectedPrize.name : 'Unknown Prize' });
+
+                const ogUrlMetaTag = document.querySelector('meta[property="og:url"]');
+                const pageUrl = ogUrlMetaTag ? ogUrlMetaTag.getAttribute('content') : window.location.href;
+                
+                const prizeNameForMessage = currentSelectedPrize ? currentSelectedPrize.name : 'an Awesome Prize';
+                const userNameForMessage = userName ? userName : "I"; 
+
+                const messageText = `🎉 OMG! You won't believe this! 🎉\n\nMy name is ${userNameForMessage}, and I just won brand new *${prizeNameForMessage}* on this awesome Spin & Win game! 🤩 I've already claimed my prize! 🎁\n\nYou HAVE to try your luck too! Who knows what you might win? 😉\nTap here to spin: ${pageUrl}\n\nGood luck! 🍀`;
+                
+                const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(messageText)}`;
+                
+                window.open(whatsappUrl, '_blank');
+                
+                winModal.classList.remove('visible');
+                successMessageArea.classList.add('visible');
+                successMessageArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+
+            // --- Initial Checks ---
+            if (!gameAudioPlayer) {
+                // console.error("CRITICAL: gameAudioPlayer HTML tag not found!");
+            } else {
+                // console.log("gameAudioPlayer found.");
+                 gameAudioPlayer.volume = GENERAL_AUDIO_VOLUME;
+            }
+        });
+    </script>
+</body>
+</html>
