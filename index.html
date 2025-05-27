@@ -3,7 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Spin & Win Guaranteed Prize!</title>
+    
+    <!-- Page Title -->
+    <title>Spin & Win - Win Guaranteed Prizes!</title>
+
+    <!-- SEO / General Description -->
+    <meta name="description" content="Try your luck on our exciting Spin Wheel! Spin to win amazing guaranteed prizes. Share with friends and claim your win!">
+
+    <!-- Open Graph / Facebook Meta Tags -->
+    <meta property="og:title" content="Spin & Win - Win Guaranteed Prizes!">
+    <meta property="og:description" content="Try your luck on our exciting Spin Wheel! Spin to win amazing guaranteed prizes. Share with friends and claim your win!">
+    <meta property="og:image" content="https://www.YOUR_DOMAIN.com/path/to/your/thumb.jpg"> <!-- REPLACE THIS URL -->
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://www.YOUR_DOMAIN.com/your-spin-page.html"> <!-- REPLACE THIS URL -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Spin & Win Game"> <!-- Optional: Your site's name -->
+
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Spin & Win - Win Guaranteed Prizes!">
+    <meta name="twitter:description" content="Try your luck on our exciting Spin Wheel! Spin to win amazing guaranteed prizes. Share with friends and claim your win!">
+    <meta name="twitter:image" content="https://www.YOUR_DOMAIN.com/path/to/your/thumb.jpg"> <!-- REPLACE THIS URL -->
+    <!-- <meta name="twitter:site" content="@YourTwitterHandle"> --> <!-- Optional: Your Twitter handle -->
+    <!-- <meta name="twitter:creator" content="@YourTwitterHandle"> --> <!-- Optional: Content creator's Twitter handle -->
+
+
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Lobster&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
@@ -529,7 +555,7 @@
                 if (currentSelectedPrize) {
                     winMessageInModal.textContent = `Congratulations! You won ${currentSelectedPrize.name}!`;
                 } else {
-                    winMessageInModal.textContent = `Congratulations! You won a prize!`; // Fallback
+                    winMessageInModal.textContent = `Congratulations! You won a prize!`;
                 }
                 
                 userNameInModal.value = ''; 
@@ -565,11 +591,10 @@
 
                 console.log('Claim details (via WhatsApp share action):', { name: userName, mobile: userMobile, prize: currentSelectedPrize ? currentSelectedPrize.name : 'Unknown Prize' });
 
-                const pageUrl = window.location.href;
+                const pageUrl = document.querySelector('meta[property="og:url"]').getAttribute('content') || window.location.href; // Get page URL from OG tag or fallback
                 const prizeNameForMessage = currentSelectedPrize ? currentSelectedPrize.name : 'an Awesome Prize';
-                const userNameForMessage = userName ? userName : "I"; // Use "I" if name is somehow empty, though validation should prevent it.
+                const userNameForMessage = userName ? userName : "I"; 
 
-                // Your chosen WhatsApp message structure:
                 const messageText = `🎉 OMG! You won't believe this! 🎉\n\nMy name is ${userNameForMessage}, and I just won brand new *${prizeNameForMessage}* on this awesome Spin & Win game! 🤩 I've already claimed my prize! 🎁\n\nYou HAVE to try your luck too! Who knows what you might win? 😉\nTap here to spin: ${pageUrl}\n\nGood luck! 🍀`;
                 
                 const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(messageText)}`;
@@ -588,6 +613,21 @@
                  console.log("gameAudioPlayer found.");
                  gameAudioPlayer.volume = GENERAL_AUDIO_VOLUME;
             }
+
+            // Dynamically set the og:url if not hardcoded to a live URL
+            // This is useful if the page URL might change or for local testing (though OG tags work best with live URLs)
+            const ogUrlMeta = document.querySelector('meta[property="og:url"]');
+            if (ogUrlMeta && (ogUrlMeta.getAttribute('content') === "https://www.YOUR_DOMAIN.com/your-spin-page.html" || !ogUrlMeta.getAttribute('content'))) {
+                 // Only update if it's the placeholder or empty
+                 ogUrlMeta.setAttribute('content', window.location.href);
+                 console.log("Dynamically set og:url to:", window.location.href);
+            }
+            const twitterUrlMeta = document.querySelector('meta[name="twitter:url"]'); // Twitter also has a URL tag
+            if (twitterUrlMeta && (twitterUrlMeta.getAttribute('content') === "https://www.YOUR_DOMAIN.com/your-spin-page.html" || !twitterUrlMeta.getAttribute('content'))) {
+                twitterUrlMeta.setAttribute('content', window.location.href);
+            }
+
+
         });
     </script>
 </body>
