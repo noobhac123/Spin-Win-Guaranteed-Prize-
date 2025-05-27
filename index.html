@@ -4,27 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
-    <!-- Primary Meta Tags for SEO and Social Sharing -->
     <title>Spin & Win - Win Guaranteed Awesome Prizes!</title>
     <meta name="description" content="Try your luck on the exciting Spin Wheel! Spin to win amazing guaranteed prizes like PayTM Cash, Movie Tickets, Gadgets, and more. Share with friends to claim your win!">
 
-    <!-- Open Graph / Facebook Meta Tags -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://spin-win-guaranteed-prize.vercel.app/"> 
     <meta property="og:title" content="Spin & Win - Win Guaranteed Awesome Prizes!">
     <meta property="og:description" content="Spin the wheel for a chance to win fantastic prizes! It's fun, easy, and you're guaranteed to win something.">
-    <!-- IMPORTANT: Confirm the path to your thumb.jpg on Vercel -->
     <meta property="og:image" content="https://spin-win-guaranteed-prize.vercel.app/thumb.jpg"> 
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:site_name" content="Spin & Win Bonanza">
 
-    <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://spin-win-guaranteed-prize.vercel.app/">
     <meta name="twitter:title" content="Spin & Win - Win Guaranteed Awesome Prizes!">
     <meta name="twitter:description" content="Spin the wheel for a chance to win fantastic prizes! It's fun, easy, and you're guaranteed to win something.">
-    <!-- IMPORTANT: Confirm the path to your thumb.jpg on Vercel -->
     <meta name="twitter:image" content="https://spin-win-guaranteed-prize.vercel.app/thumb.jpg"> 
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Lobster&display=swap" rel="stylesheet">
@@ -72,6 +67,7 @@
             box-shadow: 0 15px 45px rgba(0,0,0,0.68);
             width: 100%;
             max-width: 680px;
+            position: relative; /* For potential ad absolute positioning if needed by ad scripts */
         }
 
         header h1 {
@@ -151,8 +147,16 @@
 
         #spinButton {
             margin-top: 10px;
-            margin-bottom: 35px;
+            margin-bottom: 25px; /* Slightly reduced margin to make space for native ad */
         }
+
+        /* Style for Native Ad Container */
+        #native-ad-container {
+            margin: 20px auto; /* Centering and spacing for the native ad */
+            max-width: 100%; /* Ensure it doesn't overflow */
+             /* You might need to adjust height or min-height based on how the native ad renders */
+        }
+
 
         #spinButton.initial-glow {
              animation: pulseGlow 1.7s infinite ease-in-out;
@@ -274,7 +278,7 @@
 
 
         .content-section#successMessageArea { 
-            margin-top: 35px;
+            margin-top: 25px; /* Adjusted margin */
             padding: 30px;
             background: rgba(255, 255, 255, 0.15);
             border-radius: 20px;
@@ -400,6 +404,13 @@
 
             <button id="spinButton" class="action-button initial-glow">SPIN NOW</button>
 
+            <!-- Native Banner Ad Placement -->
+            <div id="native-ad-container">
+                <script async="async" data-cfasync="false" src="//maintaintournamentslick.com/16ee2b0dcd09e78b2f2d2dcd0a8a9019/invoke.js"></script>
+                <div id="container-16ee2b0dcd09e78b2f2d2dcd0a8a9019"></div>
+            </div>
+
+
             <div id="successMessageArea" class="content-section">
                 <p>Your prize claim has been submitted successfully!</p>
                 <p>Congratulations again! You will be contacted soon.</p>
@@ -423,6 +434,9 @@
     </div>
 
     <canvas id="confettiCanvas"></canvas>
+
+    <!-- Social Bar Ad Script (Place towards the end of body) -->
+    <script type='text/javascript' src='//maintaintournamentslick.com/78/59/09/785909b8638e0f4ea3a1455bac7e2701.js'></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -477,7 +491,7 @@
                     targetVolume = WIN_SOUND_ADJUSTMENT;
                 }
                 
-                console.log(`Attempting to play sound: ${soundSrc}, loop: ${loopSound}, target volume: ${targetVolume}`);
+                // console.log(`Attempting to play sound: ${soundSrc}, loop: ${loopSound}, target volume: ${targetVolume}`);
 
                 if (!gameAudioPlayer.paused) {
                     gameAudioPlayer.pause();
@@ -493,126 +507,22 @@
 
                 if (playPromise !== undefined) {
                     playPromise.then(() => {
-                        console.log(`${soundSrc} playback started successfully at volume ${gameAudioPlayer.volume}.`);
+                        // console.log(`${soundSrc} playback started successfully at volume ${gameAudioPlayer.volume}.`);
                     }).catch(error => {
                         console.error(`Error playing ${soundSrc}: `, error);
                     });
                 } else {
-                    console.warn(`${soundSrc}.play() did not return a promise.`);
+                    // console.warn(`${soundSrc}.play() did not return a promise.`);
                 }
             }
 
             function stopSound() {
                 if (gameAudioPlayer && !gameAudioPlayer.paused) {
-                    console.log("Stopping sound on gameAudioPlayer.");
+                    // console.log("Stopping sound on gameAudioPlayer.");
                     gameAudioPlayer.pause();
                     gameAudioPlayer.currentTime = 0;
                 }
             }
 
             // --- Event Listeners ---
-            spinButton.addEventListener('click', () => {
-                if (isSpinning) return;
-                isSpinning = true;
-                spinButton.disabled = true;
-                spinButton.classList.remove('initial-glow');
-
-                stopSound(); 
-                successMessageArea.classList.remove('visible');
-                winModal.classList.remove('visible'); 
-
-                playSound(SPIN_SOUND_SRC, true); 
-
-                const randomIndex = Math.floor(Math.random() * winnablePrizes.length);
-                currentSelectedPrize = winnablePrizes[randomIndex];
-                const winningSegmentIndex = currentSelectedPrize.originalIndex;
-
-                const prizeTrueCenterAngleOnImage = winningSegmentIndex * segmentAngle;
-                const targetAngleInCycle = (360 - prizeTrueCenterAngleOnImage + 360) % 360;
-
-                const numFullSpins = 8 + Math.floor(Math.random() * 8);
-                const prevFullRotations = Math.floor(currentRotation / 360);
-                let targetRotation = (prevFullRotations + numFullSpins) * 360 + targetAngleInCycle;
-
-                if (targetRotation <= currentRotation + 360 * 3) {
-                     targetRotation += 360 * (3 + Math.floor(Math.random()*3));
-                }
-
-                spinWheelImage.style.transform = `rotate(${targetRotation}deg)`;
-                currentRotation = targetRotation;
-
-                spinWheelImage.addEventListener('transitionend', handleVisualSpinEnd, { once: true });
-            });
-
-            function handleVisualSpinEnd() {
-                isSpinning = false;
-                stopSound(); 
-
-                if (currentSelectedPrize) {
-                    winMessageInModal.textContent = `Congratulations! You won ${currentSelectedPrize.name}!`;
-                } else {
-                    winMessageInModal.textContent = `Congratulations! You won a prize!`;
-                }
-                
-                userNameInModal.value = ''; 
-                userMobileInModal.value = ''; 
-
-                winModal.classList.add('visible');
-                
-                setTimeout(() => {
-                    playSound(WIN_SOUND_SRC, false); 
-                }, 100); 
-
-                confettiInstance({ particleCount: 300, spread: 120, origin: { y: 0.45 }, zIndex: 9999 });
-            }
-
-            window.addEventListener('beforeunload', stopSound);
-
-            whatsappShareButtonInModal.addEventListener('click', () => {
-                stopSound();
-                const userName = userNameInModal.value.trim();
-                const userMobile = userMobileInModal.value.trim();
-
-                if (!userName || !userMobile) {
-                    alert('Please fill in Your Name and Mobile Number to claim your prize.');
-                    if (!userName) userNameInModal.focus();
-                    else userMobileInModal.focus();
-                    return; 
-                }
-                if (!/^[6-9][0-9]{9}$/.test(userMobile)) {
-                    alert('Please enter a valid 10-digit mobile number.');
-                    userMobileInModal.focus();
-                    return;
-                }
-
-                console.log('Claim details (via WhatsApp share action):', { name: userName, mobile: userMobile, prize: currentSelectedPrize ? currentSelectedPrize.name : 'Unknown Prize' });
-
-                // Use the og:url from meta tag if available, otherwise fallback to window.location.href
-                const ogUrlMetaTag = document.querySelector('meta[property="og:url"]');
-                const pageUrl = ogUrlMetaTag ? ogUrlMetaTag.getAttribute('content') : window.location.href;
-                
-                const prizeNameForMessage = currentSelectedPrize ? currentSelectedPrize.name : 'an Awesome Prize';
-                const userNameForMessage = userName ? userName : "I"; 
-
-                const messageText = `🎉 OMG! You won't believe this! 🎉\n\nMy name is ${userNameForMessage}, and I just won brand new *${prizeNameForMessage}* on this awesome Spin & Win game! 🤩 I've already claimed my prize! 🎁\n\nYou HAVE to try your luck too! Who knows what you might win? 😉\nTap here to spin: ${pageUrl}\n\nGood luck! 🍀`;
-                
-                const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(messageText)}`;
-                
-                window.open(whatsappUrl, '_blank');
-                
-                winModal.classList.remove('visible');
-                successMessageArea.classList.add('visible');
-                successMessageArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            });
-
-            // --- Initial Checks ---
-            if (!gameAudioPlayer) {
-                console.error("CRITICAL: gameAudioPlayer HTML tag not found!");
-            } else {
-                 console.log("gameAudioPlayer found.");
-                 gameAudioPlayer.volume = GENERAL_AUDIO_VOLUME;
-            }
-        });
-    </script>
-</body>
-</html>
+            spinButton.addEventLi
