@@ -4,31 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
-    <!-- Page Title -->
-    <title>Spin & Win - Win Guaranteed Prizes!</title>
-
-    <!-- SEO / General Description -->
-    <meta name="description" content="Try your luck on our exciting Spin Wheel! Spin to win amazing guaranteed prizes. Share with friends and claim your win!">
+    <!-- Primary Meta Tags for SEO and Social Sharing -->
+    <title>Spin & Win - Win Guaranteed Awesome Prizes!</title>
+    <meta name="description" content="Try your luck on the exciting Spin Wheel! Spin to win amazing guaranteed prizes like PayTM Cash, Movie Tickets, Gadgets, and more. Share with friends to claim your win!">
 
     <!-- Open Graph / Facebook Meta Tags -->
-    <meta property="og:title" content="Spin & Win - Win Guaranteed Prizes!">
-    <meta property="og:description" content="Try your luck on our exciting Spin Wheel! Spin to win amazing guaranteed prizes. Share with friends and claim your win!">
-    <meta property="og:image" content="https://www.YOUR_DOMAIN.com/path/to/your/thumb.jpg"> <!-- REPLACE THIS URL -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://spin-win-guaranteed-prize.vercel.app/"> 
+    <meta property="og:title" content="Spin & Win - Win Guaranteed Awesome Prizes!">
+    <meta property="og:description" content="Spin the wheel for a chance to win fantastic prizes! It's fun, easy, and you're guaranteed to win something.">
+    <!-- IMPORTANT: Confirm the path to your thumb.jpg on Vercel -->
+    <meta property="og:image" content="https://spin-win-guaranteed-prize.vercel.app/thumb.jpg"> 
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:url" content="https://www.YOUR_DOMAIN.com/your-spin-page.html"> <!-- REPLACE THIS URL -->
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Spin & Win Game"> <!-- Optional: Your site's name -->
+    <meta property="og:site_name" content="Spin & Win Bonanza">
 
-
-    <!-- Twitter Meta Tags -->
+    <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Spin & Win - Win Guaranteed Prizes!">
-    <meta name="twitter:description" content="Try your luck on our exciting Spin Wheel! Spin to win amazing guaranteed prizes. Share with friends and claim your win!">
-    <meta name="twitter:image" content="https://www.YOUR_DOMAIN.com/path/to/your/thumb.jpg"> <!-- REPLACE THIS URL -->
-    <!-- <meta name="twitter:site" content="@YourTwitterHandle"> --> <!-- Optional: Your Twitter handle -->
-    <!-- <meta name="twitter:creator" content="@YourTwitterHandle"> --> <!-- Optional: Content creator's Twitter handle -->
-
+    <meta name="twitter:url" content="https://spin-win-guaranteed-prize.vercel.app/">
+    <meta name="twitter:title" content="Spin & Win - Win Guaranteed Awesome Prizes!">
+    <meta name="twitter:description" content="Spin the wheel for a chance to win fantastic prizes! It's fun, easy, and you're guaranteed to win something.">
+    <!-- IMPORTANT: Confirm the path to your thumb.jpg on Vercel -->
+    <meta name="twitter:image" content="https://spin-win-guaranteed-prize.vercel.app/thumb.jpg"> 
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Lobster&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
@@ -190,7 +187,6 @@
             animation: none;
         }
 
-        /* Modal Styles */
         .modal {
             position: fixed;
             z-index: 1000;
@@ -591,7 +587,10 @@
 
                 console.log('Claim details (via WhatsApp share action):', { name: userName, mobile: userMobile, prize: currentSelectedPrize ? currentSelectedPrize.name : 'Unknown Prize' });
 
-                const pageUrl = document.querySelector('meta[property="og:url"]').getAttribute('content') || window.location.href; // Get page URL from OG tag or fallback
+                // Use the og:url from meta tag if available, otherwise fallback to window.location.href
+                const ogUrlMetaTag = document.querySelector('meta[property="og:url"]');
+                const pageUrl = ogUrlMetaTag ? ogUrlMetaTag.getAttribute('content') : window.location.href;
+                
                 const prizeNameForMessage = currentSelectedPrize ? currentSelectedPrize.name : 'an Awesome Prize';
                 const userNameForMessage = userName ? userName : "I"; 
 
@@ -613,21 +612,6 @@
                  console.log("gameAudioPlayer found.");
                  gameAudioPlayer.volume = GENERAL_AUDIO_VOLUME;
             }
-
-            // Dynamically set the og:url if not hardcoded to a live URL
-            // This is useful if the page URL might change or for local testing (though OG tags work best with live URLs)
-            const ogUrlMeta = document.querySelector('meta[property="og:url"]');
-            if (ogUrlMeta && (ogUrlMeta.getAttribute('content') === "https://www.YOUR_DOMAIN.com/your-spin-page.html" || !ogUrlMeta.getAttribute('content'))) {
-                 // Only update if it's the placeholder or empty
-                 ogUrlMeta.setAttribute('content', window.location.href);
-                 console.log("Dynamically set og:url to:", window.location.href);
-            }
-            const twitterUrlMeta = document.querySelector('meta[name="twitter:url"]'); // Twitter also has a URL tag
-            if (twitterUrlMeta && (twitterUrlMeta.getAttribute('content') === "https://www.YOUR_DOMAIN.com/your-spin-page.html" || !twitterUrlMeta.getAttribute('content'))) {
-                twitterUrlMeta.setAttribute('content', window.location.href);
-            }
-
-
         });
     </script>
 </body>
