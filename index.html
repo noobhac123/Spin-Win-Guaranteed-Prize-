@@ -107,7 +107,7 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
-            transition: transform 8s cubic-bezier(0.15, 0.9, 0.2, 1);
+            transition: transform 8s cubic-bezier(0.15, 0.9, 0.2, 1); /* Initial transition */
         }
 
         #coverImage {
@@ -446,11 +446,26 @@
             </div>
             <!-- END OF THIRD AD CODE -->
             
-            <!-- START OF SOCIAL BAR AD SCRIPT (MOVED HERE) -->
+            <!-- START OF SOCIAL BAR AD SCRIPT -->
             <div class="ad-container"> 
                 <script type='text/javascript' src='//maintaintournamentslick.com/0e/12/a0/0e12a063575ec1758d9d334f248df84b.js'></script>
             </div>
             <!-- END OF SOCIAL BAR AD SCRIPT -->
+
+            <!-- START OF NEW AD CODE (FIFTH AD) -->
+            <div class="ad-container">
+                <script type="text/javascript">
+                    atOptions = {
+                        'key' : '3b53c22fb6d14ddac112bd77f1fe21ee',
+                        'format' : 'iframe',
+                        'height' : 50,
+                        'width' : 320,
+                        'params' : {}
+                    };
+                </script>
+                <script type="text/javascript" src="//maintaintournamentslick.com/3b53c22fb6d14ddac112bd77f1fe21ee/invoke.js"></script>
+            </div>
+            <!-- END OF NEW AD CODE (FIFTH AD) -->
 
 
             <div id="successMessageArea" class="content-section">
@@ -479,6 +494,8 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            console.log("DOM Content Loaded. Initializing script..."); // Log 0
+
             // --- Prize Data ---
             const prizes = [
                 { name: "₹100 PayTM Cash", isReal: true }, { name: "Movie Ticket", isReal: true },
@@ -509,189 +526,4 @@
 
             // --- State Variables ---
             let isSpinning = false;
-            let currentRotation = 0;
-            let currentSelectedPrize;
-            
-            // --- Audio Settings ---
-            // IMPORTANT: CHECK THESE PATHS ON YOUR WEB HOST
-            const SPIN_SOUND_SRC = "spin.mp3"; 
-            const WIN_SOUND_SRC = "win.mp3";
-            const GENERAL_AUDIO_VOLUME = 0.3; 
-            const WIN_SOUND_ADJUSTMENT = 0.15; 
-
-            // --- Audio Helper Functions ---
-            function playSound(soundSrc, loopSound = false) {
-                if (!gameAudioPlayer) {
-                    console.error("gameAudioPlayer element not found!");
-                    return;
-                }
-                
-                let targetVolume = GENERAL_AUDIO_VOLUME;
-                if (soundSrc === WIN_SOUND_SRC) {
-                    targetVolume = WIN_SOUND_ADJUSTMENT;
-                }
-                
-                console.log(`Attempting to play sound: ${soundSrc}, loop: ${loopSound}, target volume: ${targetVolume}`);
-
-                // Stop any currently playing sound on the single player
-                if (!gameAudioPlayer.paused) {
-                    gameAudioPlayer.pause();
-                    gameAudioPlayer.currentTime = 0; // Reset time
-                }
-
-                gameAudioPlayer.src = soundSrc;
-                gameAudioPlayer.loop = loopSound;
-                gameAudioPlayer.volume = targetVolume; 
-                // gameAudioPlayer.currentTime = 0; // Already did above
-                // gameAudioPlayer.load(); // Not always necessary after setting src, play() implies load. Can sometimes cause issues.
-                
-                const playPromise = gameAudioPlayer.play();
-
-                if (playPromise !== undefined) {
-                    playPromise.then(() => {
-                        console.log(`${soundSrc} playback started successfully at volume ${gameAudioPlayer.volume}.`);
-                    }).catch(error => {
-                        console.error(`Error playing ${soundSrc}: `, error);
-                        // If sound fails to play, ensure game logic (like enabling spin button) still proceeds
-                        // or provide user feedback. For now, just logging.
-                        if (soundSrc === SPIN_SOUND_SRC && isSpinning) {
-                            // If spin sound fails, the visual spin should still happen.
-                            // If win sound fails, the modal should still show.
-                        }
-                    });
-                } else {
-                    console.warn(`${soundSrc}.play() did not return a promise. Legacy browser?`);
-                }
-            }
-
-            function stopSound() {
-                if (gameAudioPlayer && !gameAudioPlayer.paused) {
-                    console.log("Stopping sound on gameAudioPlayer.");
-                    gameAudioPlayer.pause();
-                    gameAudioPlayer.currentTime = 0;
-                }
-            }
-
-            // --- Event Listeners ---
-            spinButton.addEventListener('click', () => {
-                console.log("Spin button clicked. isSpinning:", isSpinning); // Debug log
-                if (isSpinning) return;
-                isSpinning = true;
-                spinButton.disabled = true;
-                spinButton.classList.remove('initial-glow');
-
-                stopSound(); 
-                successMessageArea.classList.remove('visible');
-                winModal.classList.remove('visible'); 
-
-                playSound(SPIN_SOUND_SRC, true); 
-
-                const randomIndex = Math.floor(Math.random() * winnablePrizes.length);
-                currentSelectedPrize = winnablePrizes[randomIndex];
-                const winningSegmentIndex = currentSelectedPrize.originalIndex;
-
-                const prizeTrueCenterAngleOnImage = winningSegmentIndex * segmentAngle;
-                const targetAngleInCycle = (360 - prizeTrueCenterAngleOnImage + 360) % 360; // Ensure positive angle
-
-                const numFullSpins = 8 + Math.floor(Math.random() * 8); // At least 8 full spins
-                const prevFullRotations = Math.floor(currentRotation / 360);
-                let targetRotation = (prevFullRotations + numFullSpins) * 360 + targetAngleInCycle;
-
-                // Ensure significant rotation change
-                if (targetRotation <= currentRotation + 360 * 3) { // Needs at least 3 more full spins than current angle for good effect
-                     targetRotation += 360 * (3 + Math.floor(Math.random()*3));
-                }
-                
-                console.log("Current Rotation:", currentRotation, "Target Rotation:", targetRotation, "Prize:", currentSelectedPrize.name); // Debug log
-
-                spinWheelImage.style.transition = 'transform 8s cubic-bezier(0.15, 0.9, 0.2, 1)'; // Ensure transition is set each time
-                spinWheelImage.style.transform = `rotate(${targetRotation}deg)`;
-                currentRotation = targetRotation; // Update currentRotation immediately
-
-                spinWheelImage.addEventListener('transitionend', handleVisualSpinEnd, { once: true });
-            });
-
-            function handleVisualSpinEnd() {
-                console.log("Transition ended. Prize:", currentSelectedPrize.name); // Debug log
-                // isSpinning = false; // This will be set after modal interactions usually or if user can spin again.
-                                    // For now, let's assume one spin per page load or until claim.
-                                    // If re-enabling spin, do it here:
-                                    // spinButton.disabled = false;
-                                    // isSpinning = false;
-
-                stopSound(); // Stop spin.mp3 explicitly
-
-                if (currentSelectedPrize) {
-                    winMessageInModal.textContent = `Congratulations! You won ${currentSelectedPrize.name}!`;
-                } else {
-                    // This case should ideally not happen if winnablePrizes is always populated
-                    winMessageInModal.textContent = `Congratulations! You won a prize!`; 
-                }
-                
-                userNameInModal.value = ''; 
-                userMobileInModal.value = ''; 
-
-                winModal.classList.add('visible'); 
-                
-                playSound(WIN_SOUND_SRC, false); 
-
-                confettiInstance({ particleCount: 300, spread: 120, origin: { y: 0.45 }, zIndex: 9999 });
-            }
-
-            window.addEventListener('beforeunload', stopSound);
-
-            whatsappShareButtonInModal.addEventListener('click', () => {
-                stopSound();
-                const userName = userNameInModal.value.trim();
-                const userMobile = userMobileInModal.value.trim();
-
-                if (!userName || !userMobile) {
-                    alert('Please fill in Your Name and Mobile Number to claim your prize.');
-                    if (!userName) userNameInModal.focus();
-                    else userMobileInModal.focus();
-                    return; 
-                }
-                if (!/^[6-9][0-9]{9}$/.test(userMobile)) {
-                    alert('Please enter a valid 10-digit mobile number.');
-                    userMobileInModal.focus();
-                    return;
-                }
-
-                console.log('Claim details (via WhatsApp share action):', { name: userName, mobile: userMobile, prize: currentSelectedPrize ? currentSelectedPrize.name : 'Unknown Prize' });
-
-                const ogUrlMetaTag = document.querySelector('meta[property="og:url"]');
-                const pageUrl = ogUrlMetaTag ? ogUrlMetaTag.getAttribute('content') : window.location.href;
-                
-                const prizeNameForMessage = currentSelectedPrize ? currentSelectedPrize.name : 'an Awesome Prize';
-                const userNameForMessage = userName ? userName : "I"; 
-
-                const messageText = `🎉 OMG! You won't believe this! 🎉\n\nMy name is ${userNameForMessage}, and I just won brand new *${prizeNameForMessage}* on this awesome Spin & Win game! 🤩 I've already claimed my prize! 🎁\n\nYou HAVE to try your luck too! Who knows what you might win? 😉\nTap here to spin: ${pageUrl}\n\nGood luck! 🍀`;
-                
-                const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(messageText)}`;
-                
-                window.open(whatsappUrl, '_blank');
-                
-                winModal.classList.remove('visible');
-                successMessageArea.classList.add('visible');
-                successMessageArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                
-                // After successful claim, you might want to permanently disable the spin button or manage state
-                spinButton.disabled = true; 
-                isSpinning = true; // Prevent further spins after claim
-            });
-
-            // --- Initial Checks ---
-            if (!gameAudioPlayer) {
-                console.error("CRITICAL: gameAudioPlayer HTML tag not found!");
-            } else {
-                 console.log("gameAudioPlayer found.");
-                 gameAudioPlayer.volume = GENERAL_AUDIO_VOLUME;
-            }
-            if (!spinWheelImage) console.error("CRITICAL: spinWheelImage not found!");
-            if (!spinButton) console.error("CRITICAL: spinButton not found!");
-
-        });
-    </script>
-    <!-- The social bar ad script was moved up into the main content as per request -->
-</body>
-</html>
+            let currentRotat
