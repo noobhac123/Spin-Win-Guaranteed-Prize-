@@ -191,8 +191,8 @@
             width: 100%;
             flex-direction: column; 
         }
-        .ad-container:last-of-type { 
-             margin-bottom: 20px; /* Ensure space before the success message */
+        .ad-container:last-of-type { /* Applies to the last ad container before success message */
+             margin-bottom: 20px; 
         }
 
 
@@ -403,8 +403,8 @@
         <main>
             <div class="wheel-container">
                 <div class="wheel-pointer"></div>
-                <img src="spin.png" alt="Spin Wheel" id="spinWheelImage">
-                <img src="cover.png" alt="Wheel Cover" id="coverImage">
+                <img src="spin.png" alt="Spin Wheel" id="spinWheelImage"> <!-- Check path on host -->
+                <img src="cover.png" alt="Wheel Cover" id="coverImage"> <!-- Check path on host -->
             </div>
 
             <button id="spinButton" class="action-button initial-glow">SPIN NOW</button>
@@ -445,6 +445,13 @@
                 <script type="text/javascript" src="//maintaintournamentslick.com/ce546bc4fe2e075e0cb10c75198633bb/invoke.js"></script>
             </div>
             <!-- END OF THIRD AD CODE -->
+            
+            <!-- START OF SOCIAL BAR AD SCRIPT (MOVED HERE) -->
+            <div class="ad-container"> 
+                <script type='text/javascript' src='//maintaintournamentslick.com/0e/12/a0/0e12a063575ec1758d9d334f248df84b.js'></script>
+            </div>
+            <!-- END OF SOCIAL BAR AD SCRIPT -->
+
 
             <div id="successMessageArea" class="content-section">
                 <p>Your prize claim has been submitted successfully!</p>
@@ -506,6 +513,7 @@
             let currentSelectedPrize;
             
             // --- Audio Settings ---
+            // IMPORTANT: CHECK THESE PATHS ON YOUR WEB HOST
             const SPIN_SOUND_SRC = "spin.mp3"; 
             const WIN_SOUND_SRC = "win.mp3";
             const GENERAL_AUDIO_VOLUME = 0.3; 
@@ -520,15 +528,4 @@
                 
                 let targetVolume = GENERAL_AUDIO_VOLUME;
                 if (soundSrc === WIN_SOUND_SRC) {
-                    targetVolume = WIN_SOUND_ADJUSTMENT;
-                }
-                
-                console.log(`Attempting to play sound: ${soundSrc}, loop: ${loopSound}, target volume: ${targetVolume}`);
-
-                if (!gameAudioPlayer.paused) {
-                    gameAudioPlayer.pause();
-                }
-
-                gameAudioPlayer.src = soundSrc;
-                gameAudioPlayer.loop = loopSound;
-                gameAudioPlayer.volume = targe
+             
