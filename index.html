@@ -107,7 +107,7 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
-            transition: transform 8s cubic-bezier(0.15, 0.9, 0.2, 1);
+            transition: transform 8s cubic-bezier(0.15, 0.9, 0.2, 1); /* Initial transition */
         }
 
         #coverImage {
@@ -479,6 +479,8 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            console.log("DOM Content Loaded. Initializing script..."); // Log 0
+
             // --- Prize Data ---
             const prizes = [
                 { name: "₹100 PayTM Cash", isReal: true }, { name: "Movie Ticket", isReal: true },
@@ -522,10 +524,7 @@
             // --- Audio Helper Functions ---
             function playSound(soundSrc, loopSound = false) {
                 if (!gameAudioPlayer) {
-                    console.error("gameAudioPlayer element not found!");
+                    console.error("gameAudioPlayer element not found for sound: " + soundSrc);
                     return;
                 }
-                
-                let targetVolume = GENERAL_AUDIO_VOLUME;
-                if (soundSrc === WIN_SOUND_SRC) {
-             
+         
