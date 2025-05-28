@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <title>Spin & Win - Win Guaranteed Awesome Prizes!</title>
+    <meta name="description" content="Try your luck on the exciting Spin Wheel! Spin to win amazing guaranteed prizes like PayTM Cash, Movie Tickets, Gadgets, and more. Share with friends to claim your win!">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://spin-win-guaranteed-prize.vercel.app/"> 
+    <meta property="og:title" content="Spin & Win - Win Guaranteed Awesome Prizes!">
+    <meta property="og:description" content="Spin the wheel for a chance to win fantastic prizes! It's fun, easy, and you're guaranteed to win something.">
+    <meta property="og:image" content="https://spin-win-guaranteed-prize.vercel.app/thumb.jpg"> 
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Spin & Win Bonanza">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://spin-win-guaranteed-prize.vercel.app/">
+    <meta name="twitter:title" content="Spin & Win - Win Guaranteed Awesome Prizes!">
+    <meta name="twitter:description" content="Spin the wheel for a chance to win fantastic prizes! It's fun, easy, and you're guaranteed to win something.">
+    <meta name="twitter:image" content="https://spin-win-guaranteed-prize.vercel.app/thumb.jpg"> 
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Lobster&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #6a0dad;
+            --secondary-color: #c83795;
+            --accent-color: #ffd700;
+            --pointer-color: #ffffff;
+            --number-highlight-color: #ffd700;
+            --text-color: #ffffff;
+            --text-dark: #333333;
+            --glow-color: rgba(255, 223, 0, 0.75);
+            --modal-bg: linear-gradient(145deg, rgba(60, 0, 90, 0.96), rgba(120, 30, 90, 0.96));
+            --smooth-ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --modal-ease: cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Springy feel */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color) 70%, var(--accent-color) 100%);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 15px;
+            overflow-x: hidden;
+            text-align: center;
+            -webkit-user-select: none; /* Disable text selection for the whole body */
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-font-smoothing: antialiased; 
+            -moz-osx-font-smoothing: grayscale; 
+        }
+
+        .app-container {
+            background: rgba(0, 0, 0, 0.42);
+            padding: 20px;
+            border-radius: 28px;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.68);
+            width: 100%;
+            max-width: 680px;
+        }
+
+        header h1 {
+            font-family: 'Lobster', cursive;
+            font-size: 3em;
+            color: var(--accent-color);
+            text-shadow: 3px 3px 7px rgba(0,0,0,0.7);
+            margin-bottom: 30px;
+        }
+
+        .wheel-container {
+            position: relative;
+            width: 90vw;
+            max-width: 520px;
+            height: 90vw;
+            max-height: 520px;
+            margin: 0 auto 30px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wheel-pointer {
+            width: 0;
+            height: 0;
+            border-left: 34px solid transparent;
+            border-right: 34px solid transparent;
+            border-top: 51px solid var(--pointer-color);
+            position: absolute;
+            top: -17px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            filter: drop-shadow(0px 6px 6px rgba(0,0,0,0.7));
+        }
+
+        #spinWheelImage {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            will-change: transform; 
+        }
+
+        #coverImage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 80px;
+            max-height: 80px;
+            width: 15%;
+            height: auto;
+            z-index: 5;
+        }
+
+
+        .action-button {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 1.35em;
+            padding: 16px 38px;
+            border: none;
+            outline: none; /* Remove default focus outline */
+            border-radius: 60px;
+            color: var(--text-dark);
+            background: linear-gradient(45deg, var(--accent-color), #ffc107);
+            cursor: pointer;
+            box-shadow: 0 0 16px var(--glow-color), 0 0 32px var(--glow-color);
+            transition: transform 0.2s var(--smooth-ease-out), box-shadow 0.2s var(--smooth-ease-out);
+            display: inline-block;
+            width: auto; 
+            -webkit-user-select: none; /* Specific for buttons if body one isn't enough */
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        .action-button.full-width {
+            width: 100%;
+        }
+
+
+        #spinButton {
+            margin-top: 10px;
+            margin-bottom: 20px; 
+        }
+
+        #spinButton.initial-glow {
+             animation: pulseGlow 1.6s infinite var(--smooth-ease-out); /* Slightly adjusted duration */
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% {
+                box-shadow: 0 0 14px var(--glow-color), 0 0 28px var(--glow-color);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 0 20px var(--glow-color), 0 0 40px var(--glow-color), 0 0 55px var(--glow-color);
+                transform: scale(1.05); /* Slightly more subtle pulse */
+            }
+        }
+
+        .action-button:hover:not(:disabled) {
+            transform: translateY(-5px) scale(1.04); /* Adjusted for smoother feel */
+            box-shadow: 0 0 20px var(--glow-color), 0 0 40px var(--glow-color), 0 0 60px var(--glow-color);
+        }
+
+        .action-button:active:not(:disabled) {
+            transform: translateY(0px) scale(0.96); /* Adjusted active state */
+            box-shadow: 0 0 12px var(--glow-color), 0 0 24px var(--glow-color);
+        }
+
+        .action-button:disabled {
+            background: #909090;
+            color: #333333;
+            cursor: not-allowed;
+            box-shadow: none;
+            animation: none;
+        }
+
+        /* Ad container styling */
+        .ad-container {
+            margin-bottom: 15px; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            flex-direction: column; 
+        }
+        .ad-container:last-of-type { 
+             margin-bottom: 20px; 
+        }
+
+
+        .modal {
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.85); /* Slightly darker for better contrast */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            padding: 15px;
+            transition: opacity 0.25s var(--smooth-ease-out), visibility 0s linear 0.25s; 
+        }
+
+        .modal.visible {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.25s var(--smooth-ease-out), visibility 0s linear 0s;
+        }
+
+        .modal-content {
+            background: var(--modal-bg);
+            padding: 30px 25px; 
+            border: 3px solid var(--accent-color);
+            border-radius: 25px;
+            width: 95%;
+            max-width: 480px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.7), 0 0 30px var(--glow-color);
+            text-align: center;
+            position: relative;
+            transform: scale(0.75) translateY(15px); /* Start slightly smaller and lower */
+            opacity: 0; /* Start transparent for modal content fade-in */
+            transition: transform 0.3s var(--modal-ease), opacity 0.25s var(--smooth-ease-out) 0.05s; /* Stagger opacity */
+            will-change: transform, opacity; 
+        }
+        .modal.visible .modal-content {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        .modal-content p {
+            margin-bottom: 15px; 
+            font-size: 1.2em;   
+            line-height: 1.6;
+        }
+        .modal-content p#winMessageInModal { 
+            font-weight: 700;
+            color: var(--accent-color);
+            font-size: 1.6em; 
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+        .highlight-number {
+            font-weight: 700;
+            color: var(--number-highlight-color);
+            font-size: 1.1em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .claim-details-group { 
+            margin-top: 20px; 
+            margin-bottom: 25px; 
+        }
+        .claim-details-group input {
+            width: 100%; 
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--accent-color);
+            background: rgba(255,255,255,0.92);
+            color: var(--text-dark);
+            font-size: 1em;
+            box-sizing: border-box; 
+            outline: none; /* Remove focus outline from inputs too */
+        }
+        .claim-details-group input::placeholder {
+            color: #777;
+        }
+        .claim-details-group input:focus { /* Optional: add custom focus style */
+            border-color: #fff;
+            box-shadow: 0 0 8px var(--accent-color);
+        }
+        
+        .modal-content .action-button#whatsappShareButtonInModal { 
+            margin-top: 0; 
+            font-size: 1.1em;
+            padding: 12px 25px;
+            width: 100%; 
+        }
+
+        /* Styling for the Error Modal */
+        #errorModal .modal-content {
+            max-width: 420px; 
+            padding: 25px 20px;
+        }
+        #errorModalHeading {
+            color: var(--accent-color);
+            font-size: 1.4em; 
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+        }
+        #errorModalMessage {
+            font-size: 1.1em; 
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        #errorModalCloseButton {
+            font-size: 1em;
+            padding: 10px 30px;
+        }
+
+
+        .content-section#successMessageArea { 
+            margin-top: 20px; 
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(30px);
+            transition: opacity 0.4s var(--smooth-ease-out), visibility 0s linear 0.4s, transform 0.4s var(--smooth-ease-out);
+            will-change: opacity, transform;
+            max-height: 0;
+            overflow: hidden;
+        }
+
+        .content-section#successMessageArea.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            transition: opacity 0.4s var(--smooth-ease-out), visibility 0s linear 0s, transform 0.4s var(--smooth-ease-out), max-height 0.4s ease-in-out 0.1s;
+            max-height: 750px;
+        }
+         #successMessageArea p {
+            font-size: 1.3em;
+            line-height: 1.7;
+        }
+         #successMessageArea p:first-child {
+            font-weight: bold;
+            color: var(--accent-color);
+            font-size: 1.6em;
+        }
+
+
+        #confettiCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        @media (max-width: 768px) {
+            header h1 { font-size: 2.5em; }
+            .wheel-container {
+                max-width: 400px; 
+                max-height: 400px;
+            }
+            .wheel-pointer {
+                border-left-width: 28px;
+                border-right-width: 28px;
+                border-top-width: 42px;
+                top: -14px;
+            }
+             #coverImage { max-width: 65px; max-height: 65px;}
+            .action-button { font-size: 1.2em; }
+            .modal-content p { font-size: 1.1em; }
+            .modal-content p#winMessageInModal { font-size: 1.4em; }
+            #errorModalHeading { font-size: 1.3em; }
+            #errorModalMessage { font-size: 1.05em; }
+        }
+
+        @media (max-width: 520px) {
+             header h1 { font-size: 2.1em; }
+            .wheel-container {
+                max-width: 340px; 
+                max-height: 340px;
+            }
+            .wheel-pointer {
+                border-left-width: 22px;
+                border-right-width: 22px;
+                border-top-width: 33px;
+                top: -11px;
+            }
+            #coverImage { max-width: 55px; max-height: 55px;}
+            .action-button { font-size: 1.15em; padding: 13px 26px; }
+            .modal-content { width: 92%; max-width: 360px; padding: 20px 15px;}
+            #errorModal .modal-content { max-width: 340px; } 
+            .modal-content p { font-size: 1em; }
+            .modal-content p#winMessageInModal { font-size: 1.25em; }
+            #errorModalHeading { font-size: 1.2em; }
+            #errorModalMessage { font-size: 1em; }
+            .claim-details-group input { font-size: 0.9em; padding: 9px; }
+        }
+
+        @media (max-width: 400px) {
+             header h1 { font-size: 1.9em; }
+             .wheel-container {
+                max-width: 280px;
+                max-height: 280px;
+            }
+            .wheel-pointer {
+                border-left-width: 18px;
+                border-right-width: 18px;
+                border-top-width: 27px;
+                top: -9px;
+            }
+            #coverImage { max-width: 45px; max-height: 45px;}
+            #errorModal .modal-content { max-width: 90%; padding: 18px 12px; }
+            .modal-content p#winMessageInModal { font-size: 1.15em; }
+            .action-button { font-size: 1.05em; padding: 11px 20px; }
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Single Audio element -->
+    <audio id="gameAudioPlayer" preload="auto"></audio>
+
+    <div class="app-container">
+        <header>
+            <h1>Spin the Wheel & Win a Guaranteed Prize!</h1>
+        </header>
+
+        <main>
+            <div class="wheel-container">
+                <div class="wheel-pointer"></div>
+                <img src="spin.png" alt="Spin Wheel" id="spinWheelImage"> 
+                <img src="cover.png" alt="Wheel Cover" id="coverImage"> 
+            </div>
+
+            <button id="spinButton" class="action-button initial-glow">SPIN NOW</button>
+            
+            <!-- START OF FIRST AD CODE -->
+            <div class="ad-container">
+                <script type="text/javascript">
+                    atOptions = {
+                        'key' : '1a7895fd074e3000c41f8d3d72db5afc',
+                        'format' : 'iframe',
+                        'height' : 50,
+                        'width' : 320,
+                        'params' : {}
+                    };
+                </script>
+                <script type="text/javascript" src="//maintaintournamentslick.com/1a7895fd074e3000c41f8d3d72db5afc/invoke.js"></script>
+            </div>
+            <!-- END OF FIRST AD CODE -->
+
+            <!-- START OF SECOND AD CODE -->
+            <div class="ad-container">
+                <script async="async" data-cfasync="false" src="//maintaintournamentslick.com/6a70dc71175dac093c8263d90c7a888a/invoke.js"></script>
+                <div id="container-6a70dc71175dac093c8263d90c7a888a"></div>
+            </div>
+            <!-- END OF SECOND AD CODE -->
+
+            <!-- START OF THIRD AD CODE -->
+            <div class="ad-container">
+                <script type="text/javascript">
+                    atOptions = {
+                        'key' : 'ce546bc4fe2e075e0cb10c75198633bb',
+                        'format' : 'iframe',
+                        'height' : 250,
+                        'width' : 300,
+                        'params' : {}
+                    };
+                </script>
+                <script type="text/javascript" src="//maintaintournamentslick.com/ce546bc4fe2e075e0cb10c75198633bb/invoke.js"></script>
+            </div>
+            <!-- END OF THIRD AD CODE -->
+
+            <!-- START OF NEW AD (FOURTH AD - Before Social Bar) -->
+            <div class="ad-container">
+                <script type="text/javascript">
+                    atOptions = {
+                        'key' : '3b53c22fb6d14ddac112bd77f1fe21ee',
+                        'format' : 'iframe',
+                        'height' : 50,
+                        'width' : 320,
+                        'params' : {}
+                    };
+                </script>
+                <script type="text/javascript" src="//maintaintournamentslick.com/3b53c22fb6d14ddac112bd77f1fe21ee/invoke.js"></script>
+            </div>
+            <!-- END OF NEW AD (FOURTH AD) -->
+            
+            <!-- START OF SOCIAL BAR AD SCRIPT (FIFTH AD) -->
+            <div class="ad-container"> 
+                <script type='text/javascript' src='//maintaintournamentslick.com/0e/12/a0/0e12a063575ec1758d9d334f248df84b.js'></script>
+            </div>
+            <!-- END OF SOCIAL BAR AD SCRIPT (FIFTH AD) -->
+
+
+            <div id="successMessageArea" class="content-section">
+                <p>Your prize claim has been submitted successfully!</p>
+                <p>Congratulations again! You will be contacted soon.</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Win Modal -->
+    <div id="winModal" class="modal">
+        <div class="modal-content">
+            <p id="winMessageInModal"></p>
+            <p id="sharePromptInModal">To claim your prize, share this page with <span class="highlight-number">10</span> WhatsApp friends.</p>
+            
+            <div class="claim-details-group">
+                <input type="text" id="userNameInModal" placeholder="Your Name" required>
+                <input type="tel" id="userMobileInModal" placeholder="Mobile Number (10 digits)" required pattern="[6-9][0-9]{9}" title="Please enter a valid 10-digit mobile number.">
+            </div>
+            
+            <button id="whatsappShareButtonInModal" class="action-button">Share on WhatsApp & Claim</button>
+        </div>
+    </div>
+
+    <!-- Error Modal (for empty fields) -->
+    <div id="errorModal" class="modal">
+        <div class="modal-content"> 
+            <h3 id="errorModalHeading">Attention!</h3>
+            <p id="errorModalMessage">To claim your awesome prize, please enter your Name and Mobile Number.</p>
+            <button id="errorModalCloseButton" class="action-button">OK</button>
+        </div>
+    </div>
+
+    <canvas id="confettiCanvas"></canvas>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const prizes = [
+                { name: "₹100 PayTM Cash", isReal: true }, { name: "Movie Ticket", isReal: true },
+                { name: "iPhone 14", isReal: true }, { name: "Samsung TV", isReal: true },
+                { name: "Smartwatch", isReal: true }, { name: "Bluetooth Speaker", isReal: true },
+                { name: "AirPods", isReal: true }, { name: "Better Luck Next Time", isReal: false },
+                { name: "Amazon Voucher ₹50", isReal: true }, { name: "Free Coffee Coupon", isReal: true },
+                { name: "20% Discount Voucher", isReal: true }, { name: "Surprise Gift Box", isReal: true }
+            ];
+            const totalSegments = prizes.length;
+            const segmentAngle = 360 / totalSegments;
+            const winnablePrizes = prizes
+                .map((prize, index) => ({ ...prize, originalIndex: index }))
+                .filter(prize => prize.isReal);
+
+            const spinWheelImage = document.getElementById('spinWheelImage');
+            const spinButton = document.getElementById('spinButton');
+            const gameAudioPlayer = document.getElementById('gameAudioPlayer');
+            
+            const winModal = document.getElementById('winModal');
+            const winMessageInModal = document.getElementById('winMessageInModal');
+            const whatsappShareButtonInModal = document.getElementById('whatsappShareButtonInModal');
+            const userNameInModal = document.getElementById('userNameInModal');
+            const userMobileInModal = document.getElementById('userMobileInModal');
+            
+            const errorModal = document.getElementById('errorModal');
+            const errorModalCloseButton = document.getElementById('errorModalCloseButton');
+            const errorModalMessageEl = document.getElementById('errorModalMessage'); // Get the message element
+
+            const successMessageArea = document.getElementById('successMessageArea');
+            const confettiCanvas = document.getElementById('confettiCanvas');
+            
+            let confettiInstance = null;
+            if (typeof confetti !== 'undefined' && confettiCanvas) {
+                try {
+                    confettiInstance = confetti.create(confettiCanvas, { resize: true, useWorker: true });
+                } catch (e) { /* Silently fail if confetti init fails */ }
+            }
+
+            let isSpinning = false;
+            let currentRotation = 0;
+            let currentSelectedPrize = null;
+
+            const SPIN_SOUND_SRC = "spin.mp3"; 
+            const WIN_SOUND_SRC = "win.mp3";
+            const GENERAL_AUDIO_VOLUME = 0.25; 
+            const WIN_SOUND_ADJUSTMENT = 0.12;
+
+            if (gameAudioPlayer) gameAudioPlayer.volume = GENERAL_AUDIO_VOLUME;
+
+            function playSound(soundSrc, loopSound = false) {
+                if (!gameAudioPlayer) return;
+                let targetVolume = (soundSrc === WIN_SOUND_SRC) ? WIN_SOUND_ADJUSTMENT : GENERAL_AUDIO_VOLUME;
+                
+                if (!gameAudioPlayer.paused) gameAudioPlayer.pause();
+                gameAudioPlayer.currentTime = 0;
+                gameAudioPlayer.src = soundSrc; 
+                gameAudioPlayer.loop = loopSound;
+                gameAudioPlayer.volume = targetVolume;
+                
+                const playPromise = gameAudioPlayer.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(() => {/* Silently fail audio play */});
+                }
+            }
+
+            function stopSound() {
+                if (gameAudioPlayer && !gameAudioPlayer.paused) {
+                    gameAudioPlayer.pause();
+                    gameAudioPlayer.currentTime = 0;
+                }
+            }
+
+            if (spinButton && spinWheelImage) {
+                spinButton.addEventListener('click', () => {
+                    if (isSpinning) return;
+                    isSpinning = true;
+                    spinButton.disabled = true;
+                    spinButton.classList.remove('initial-glow');
+
+                    stopSound();
+                    if (successMessageArea) successMessageArea.classList.remove('visible');
+                    if (winModal) winModal.classList.remove('visible');
+                    if (errorModal) errorModal.classList.remove('visible'); 
+
+                    playSound(SPIN_SOUND_SRC, true);
+
+                    if (winnablePrizes.length === 0) {
+                        isSpinning = false; spinButton.disabled = false; return;
+                    }
+
+                    const randomIndex = Math.floor(Math.random() * winnablePrizes.length);
+                    currentSelectedPrize = winnablePrizes[randomIndex];
+                    const winningSegmentIndex = currentSelectedPrize.originalIndex;
+                    const prizeTrueCenterAngleOnImage = winningSegmentIndex * segmentAngle;
+                    const targetAngleInCycle = (360 - prizeTrueCenterAngleOnImage + 360) % 360;
+                    
+                    const baseSpins = 7; 
+                    const randomExtraSpins = 5; 
+                    const spinDuration = 7.5; 
+                    const spinEasing = 'cubic-bezier(0.23, 1, 0.32, 1)'; 
+
+
+                    const numFullSpins = baseSpins + Math.floor(Math.random() * (randomExtraSpins + 1));
+                    const prevFullRotations = Math.floor(currentRotation / 360);
+                    let targetRotation = (prevFullRotations + numFullSpins) * 360 + targetAngleInCycle;
+
+                    if (targetRotation <= currentRotation + (360 * (baseSpins / 1.8))) { 
+                        targetRotation += (360 * (3 + Math.floor(Math.random() * 2))); 
+                    }
+                    
+                    spinWheelImage.style.transition = 'none'; 
+                    void spinWheelImage.offsetWidth; 
+                    spinWheelImage.style.transition = `transform ${spinDuration}s ${spinEasing}`;
+                    spinWheelImage.style.transform = `rotate(${targetRotation}deg)`;
+                    
+                    currentRotation = targetRotation;
+
+                    spinWheelImage.removeEventListener('transitionend', handleVisualSpinEnd);
+                    spinWheelImage.addEventListener('transitionend', handleVisualSpinEnd, { once: true });
+                });
+            }
+
+            function handleVisualSpinEnd() {
+                stopSound();
+                if (currentSelectedPrize && winMessageInModal) {
+                    winMessageInModal.textContent = `Congratulations! You won ${currentSelectedPrize.name}!`;
+                } else if (winMessageInModal) {
+                    winMessageInModal.textContent = `Congratulations! You won a prize!`;
+                }
+                if (userNameInModal) userNameInModal.value = '';
+                if (userMobileInModal) userMobileInModal.value = '';
+                if (winModal) winModal.classList.add('visible');
+                
+                setTimeout(() => playSound(WIN_SOUND_SRC, false), 200);
+
+                if (confettiInstance) {
+                   setTimeout(() => confettiInstance({ 
+                       particleCount: 250, 
+                       spread: 120, 
+                       origin: { y: 0.45 }, 
+                       zIndex: 9999,
+                       gravity: 0.8, 
+                       drift: 0.05, 
+                       ticks: 300 
+                    }), 100); 
+                }
+            }
+
+            window.addEventListener('beforeunload', stopSound);
+
+            if (whatsappShareButtonInModal) {
+                whatsappShareButtonInModal.addEventListener('click', () => {
+                    stopSound();
+                    const userName = userNameInModal.value.trim();
+                    const userMobile = userMobileInModal.value.trim();
+
+                    // Check for empty Name or Mobile
+                    if (!userName || !userMobile) {
+                        if (errorModalMessageEl) { // Set the message for empty fields
+                            errorModalMessageEl.textContent = "To claim your awesome prize, please enter your Name and Mobile Number.";
+                        }
+                        if (errorModal) errorModal.classList.add('visible');
+                        
+                        if (!userName && userNameInModal) userNameInModal.focus();
+                        else if (userMobileInModal) userMobileInModal.focus();
+                        return; 
+                    }
+
+                    // Check for invalid mobile number format
+                    if (!/^[6-9][0-9]{9}$/.test(userMobile)) {
+                        if (errorModalMessageEl) { // Set the message for invalid mobile
+                            errorModalMessageEl.textContent = "Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9.";
+                        }
+                        if (errorModal) errorModal.classList.add('visible');
+                        if (userMobileInModal) userMobileInModal.focus();
+                        return;
+                    }
+
+                    // If all validations pass, proceed to share
+                    const ogUrlMetaTag = document.querySelector('meta[property="og:url"]');
+                    const pageUrl = ogUrlMetaTag ? ogUrlMetaTag.getAttribute('content') : window.location.href;
+                    const prizeNameForMessage = currentSelectedPrize ? currentSelectedPrize.name : 'an Awesome Prize';
+                    const userNameForMessage = userName ? userName : "I";
+                    const messageText = `🎉 OMG! You won't believe this! 🎉\n\nMy name is ${userNameForMessage}, and I just won brand new *${prizeNameForMessage}* on this awesome Spin & Win game! 🤩 I've already claimed my prize! 🎁\n\nYou HAVE to try your luck too! Who knows what you might win? 😉\nTap here to spin: ${pageUrl}\n\nGood luck! 🍀`;
+                    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(messageText)}`;
+                    
+                    window.open(whatsappUrl, '_blank');
+                    
+                    if (winModal) winModal.classList.remove('visible');
+                    if (errorModal) errorModal.classList.remove('visible'); 
+                    if (successMessageArea) {
+                        successMessageArea.classList.add('visible');
+                        successMessageArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                    if (spinButton) spinButton.disabled = true;
+                });
+            }
+
+            if (errorModalCloseButton && errorModal) {
+                errorModalCloseButton.addEventListener('click', () => {
+                    errorModal.classList.remove('visible');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
