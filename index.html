@@ -107,7 +107,7 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
-            transition: transform 8s cubic-bezier(0.15, 0.9, 0.2, 1); /* Initial transition */
+            /* transition property is set in JS for better control before each spin */
         }
 
         #coverImage {
@@ -403,13 +403,16 @@
         <main>
             <div class="wheel-container">
                 <div class="wheel-pointer"></div>
-                <img src="spin.png" alt="Spin Wheel" id="spinWheelImage"> <!-- Check path on host -->
-                <img src="cover.png" alt="Wheel Cover" id="coverImage"> <!-- Check path on host -->
+                <!-- ZAROORI: Server par 'spin.png' aur 'cover.png' ka path check karein! -->
+                <!-- Agar 'assets' folder mein hain, toh 'assets/spin.png' likhein. -->
+                <img src="spin.png" alt="Spin Wheel" id="spinWheelImage"> 
+                <img src="cover.png" alt="Wheel Cover" id="coverImage"> 
             </div>
 
             <button id="spinButton" class="action-button initial-glow">SPIN NOW</button>
             
-            <!-- START OF FIRST AD CODE -->
+            <!-- AD SCRIPTS COMMENTED OUT FOR TESTING -->
+            <!-- START OF FIRST AD CODE
             <div class="ad-container">
                 <script type="text/javascript">
                     atOptions = {
@@ -422,16 +425,16 @@
                 </script>
                 <script type="text/javascript" src="//maintaintournamentslick.com/1a7895fd074e3000c41f8d3d72db5afc/invoke.js"></script>
             </div>
-            <!-- END OF FIRST AD CODE -->
+            END OF FIRST AD CODE -->
 
-            <!-- START OF SECOND AD CODE -->
+            <!-- START OF SECOND AD CODE
             <div class="ad-container">
                 <script async="async" data-cfasync="false" src="//maintaintournamentslick.com/6a70dc71175dac093c8263d90c7a888a/invoke.js"></script>
                 <div id="container-6a70dc71175dac093c8263d90c7a888a"></div>
             </div>
-            <!-- END OF SECOND AD CODE -->
+            END OF SECOND AD CODE -->
 
-            <!-- START OF THIRD AD CODE -->
+            <!-- START OF THIRD AD CODE
             <div class="ad-container">
                 <script type="text/javascript">
                     atOptions = {
@@ -444,15 +447,15 @@
                 </script>
                 <script type="text/javascript" src="//maintaintournamentslick.com/ce546bc4fe2e075e0cb10c75198633bb/invoke.js"></script>
             </div>
-            <!-- END OF THIRD AD CODE -->
+            END OF THIRD AD CODE -->
             
-            <!-- START OF SOCIAL BAR AD SCRIPT -->
+            <!-- START OF SOCIAL BAR AD SCRIPT
             <div class="ad-container"> 
                 <script type='text/javascript' src='//maintaintournamentslick.com/0e/12/a0/0e12a063575ec1758d9d334f248df84b.js'></script>
             </div>
-            <!-- END OF SOCIAL BAR AD SCRIPT -->
+            END OF SOCIAL BAR AD SCRIPT -->
 
-            <!-- START OF NEW AD CODE (FIFTH AD) -->
+            <!-- START OF NEW AD CODE (FIFTH AD)
             <div class="ad-container">
                 <script type="text/javascript">
                     atOptions = {
@@ -465,7 +468,7 @@
                 </script>
                 <script type="text/javascript" src="//maintaintournamentslick.com/3b53c22fb6d14ddac112bd77f1fe21ee/invoke.js"></script>
             </div>
-            <!-- END OF NEW AD CODE (FIFTH AD) -->
+            END OF NEW AD CODE (FIFTH AD) -->
 
 
             <div id="successMessageArea" class="content-section">
@@ -494,9 +497,8 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            console.log("DOM Content Loaded. Initializing script..."); // Log 0
+            console.log("DEBUG: DOMContentLoaded event fired.");
 
-            // --- Prize Data ---
             const prizes = [
                 { name: "₹100 PayTM Cash", isReal: true }, { name: "Movie Ticket", isReal: true },
                 { name: "iPhone 14", isReal: true }, { name: "Samsung TV", isReal: true },
@@ -511,7 +513,6 @@
                 .map((prize, index) => ({ ...prize, originalIndex: index }))
                 .filter(prize => prize.isReal);
 
-            // --- DOM Elements ---
             const spinWheelImage = document.getElementById('spinWheelImage');
             const spinButton = document.getElementById('spinButton');
             const gameAudioPlayer = document.getElementById('gameAudioPlayer');
@@ -522,8 +523,8 @@
             const userMobileInModal = document.getElementById('userMobileInModal');
             const successMessageArea = document.getElementById('successMessageArea');
             const confettiCanvas = document.getElementById('confettiCanvas');
-            const confettiInstance = confetti.create(confettiCanvas, { resize: true, useWorker: true });
-
-            // --- State Variables ---
-            let isSpinning = false;
-            let currentRotat
+            
+            let confettiInstance = null;
+            if (typeof confetti !== 'undefined') {
+                try {
+                    confettiInstan
